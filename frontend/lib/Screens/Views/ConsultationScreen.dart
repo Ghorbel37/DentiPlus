@@ -9,6 +9,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 import '../Widgets/consultationCard.dart';
+import 'chat_screen.dart';
 
 class Consultationscreen extends StatefulWidget {
   const Consultationscreen({Key? key}) : super(key: key);
@@ -47,9 +48,8 @@ class _TabBarExampleState extends State<Consultationscreen>
       appBar: AppBar(
         title: Text(
           "Liste des Consultations",
-          style: GoogleFonts.poppins(color: Colors.black,
-              fontWeight: FontWeight.w700,
-              fontSize: 20.sp),
+          style: GoogleFonts.poppins(
+              color: Colors.black, fontWeight: FontWeight.w700, fontSize: 20.sp),
         ),
         centerTitle: false,
         elevation: 0,
@@ -61,9 +61,10 @@ class _TabBarExampleState extends State<Consultationscreen>
               height: 20,
               width: 20,
               decoration: const BoxDecoration(
-                  image: DecorationImage(
-                image: AssetImage("lib/icons/search.png"),
-              )),
+                image: DecorationImage(
+                  image: AssetImage("lib/icons/search.png"),
+                ),
+              ),
             ),
           ),
         ],
@@ -81,63 +82,63 @@ class _TabBarExampleState extends State<Consultationscreen>
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: Container(
-                                width: double.infinity,
-                                height: 50, // Fixer la hauteur pour éviter les bugs d'affichage
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    width: 2,
-                                    color: const Color.fromARGB(255, 3, 190, 150),
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
+                            child: Container(
+                              width: double.infinity,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 2,
+                                  color: const Color.fromARGB(255, 3, 190, 150),
+                                ),
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(25),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.05),
+                                    blurRadius: 6,
+                                    spreadRadius: 1,
+                                    offset: const Offset(0, 3),
                                   ),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(25),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 6,
-                                      spreadRadius: 1,
-                                      offset: const Offset(0, 3),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: TabBar(
+                                  controller: tabController,
+                                  indicator: BoxDecoration(
+                                    color: const Color.fromARGB(255, 3, 190, 150),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  indicatorSize: TabBarIndicatorSize.tab,
+                                  labelPadding: EdgeInsets.zero,
+                                  unselectedLabelColor: Colors.black54,
+                                  labelColor: Colors.white,
+                                  labelStyle: TextStyle(
+                                      fontSize: 16.sp, fontWeight: FontWeight.w500),
+                                  tabs: const [
+                                    Expanded(
+                                      child: Tab(text: "Encore"),
+                                    ),
+                                    Expanded(
+                                      child: Tab(text: "Validé"),
                                     ),
                                   ],
                                 ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25), // Éviter le débordement de l'indicateur
-                                  child: TabBar(
-                                    controller: tabController,
-                                    indicator: BoxDecoration(
-                                      color: const Color.fromARGB(255, 3, 190, 150),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    indicatorSize: TabBarIndicatorSize.tab, // L’indicateur prend toute la taille de l’onglet
-                                    labelPadding: EdgeInsets.zero, // Évite le décalage du texte
-                                    unselectedLabelColor: Colors.black54,
-                                    labelColor: Colors.white,
-                                    labelStyle: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w500),
-                                    tabs: const [
-                                      Expanded(
-                                        child: Tab(text: "Encore"),
-                                      ),
-                                      Expanded(
-                                        child: Tab(text: "validé"),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                    ),
                     const SizedBox(height: 20),
                     Expanded(
                       child: TabBarView(
                         controller: tabController,
                         children: [
-                          // Utiliser une liste de widgets pour les cartes
                           ListView(
                             children: consultationData.map((data) {
                               return ConsultationCard(
@@ -151,7 +152,6 @@ class _TabBarExampleState extends State<Consultationscreen>
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -159,6 +159,29 @@ class _TabBarExampleState extends State<Consultationscreen>
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Navigate to the conversation screen or start a new chat
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(), // Replace with your actual chat screen
+            ),
+          );
+        },
+        backgroundColor: const Color.fromARGB(255, 3, 190, 150),
+        child: Container(
+          height: 20,
+          width: 20,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/Chat.png"),
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
+
   }
 }
