@@ -10,7 +10,8 @@ class ConsultationCard extends StatelessWidget {
   final String time;
   final String title;
 
-  const ConsultationCard({super.key, required this.date, required this.time, required this.title});
+  const ConsultationCard(
+      {super.key, required this.date, required this.time, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,8 @@ class ConsultationCard extends StatelessWidget {
         onTap: () {
           Navigator.push(
             context,
-            PageTransition(type: PageTransitionType.fade, child: const ChatScreen()),
+            PageTransition(
+                type: PageTransitionType.fade, child: const ChatScreen()),
           );
         },
         child: Container(
@@ -48,10 +50,12 @@ class ConsultationCard extends StatelessWidget {
               /// ✅ **Contenu de la carte**
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 12.0, horizontal: 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center, // ✅ Centrage vertical du texte
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // ✅ Centrage vertical du texte
                     children: [
                       /// ✅ **Titre de la consultation**
                       Text(
@@ -104,6 +108,7 @@ class ConsultationCard extends StatelessWidget {
                     ],
                   ),
                 ),
+
               ),
             ],
           ),
