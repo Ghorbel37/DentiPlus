@@ -1,5 +1,6 @@
 // lib/models/consultation.dart
 import 'dart:convert';
+import 'package:denti_plus/modals/patientCreateModal.dart';
 import 'package:intl/intl.dart';
 import 'enums.dart';
 import 'doctorModal.dart';
@@ -21,7 +22,7 @@ class Consultation {
   final int? doctorId;
   final int? patientId;
   final Doctor? doctor;
-  final Patient? patient;
+  final PatientCreate? patient;
   final Appointment? appointment;
   final List<Hypothese>? hypotheses;
   final List<Symptoms>? symptoms;
@@ -59,7 +60,7 @@ class Consultation {
       doctorId: json['doctor_id'] as int?,
       patientId: json['patient_id'] as int?,
       doctor: json['doctor'] != null ? Doctor.fromJson(json['doctor']) : null,
-      patient: json['patient'] != null ? Patient.fromJson(json['patient']) : null,
+      patient: json['patient'] != null ? PatientCreate.fromJson(json['patient']) : null,
       appointment: json['appointment'] != null ? Appointment.fromJson(json['appointment']) : null,
       hypotheses: json['hypotheses'] != null
           ? List<Hypothese>.from(
