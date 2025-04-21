@@ -1,26 +1,33 @@
+import 'package:denti_plus/modals/enums.dart';
+import 'package:denti_plus/modals/patientCreateModal.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../modals/appointmentModal.dart';
+import '../../modals/doctorModal.dart';
+import '../../providers/appointment_provider.dart';
 import '../Views/doctor_details_screen.dart';
 
 class shedule_card extends StatefulWidget {
-  final String mainText;
-  final String subText;
-  final String image;
+  final Appointment appointment;
+  final PatientCreate? doctor;
   final String date;
   final String time;
-  final String confirmation;
+  final String? confirmation;
+  final VoidCallback onCancel;
+
 
   const shedule_card({
     super.key,
-    required this.mainText,
-    required this.subText,
+    required this.appointment,
+    required this.doctor,
     required this.date,
-    required this.confirmation,
     required this.time,
-    required this.image,
+    required this.confirmation,
+    required this.onCancel,
   });
 
   @override
@@ -38,7 +45,7 @@ class _SheduleCardState extends State<shedule_card> {
 
     return Center(
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.22,
+        height: MediaQuery.of(context).size.height * 0.19,
         width: MediaQuery.of(context).size.width * 0.9,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -58,12 +65,12 @@ class _SheduleCardState extends State<shedule_card> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.mainText,
+                          'Docteur ${widget.doctor?.name}' ?? "Unknown Doctor",
                           style: GoogleFonts.poppins(
                               fontSize: 17.sp, fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          widget.subText,
+                          widget.confirmation!.substring(16),
                           style: GoogleFonts.poppins(
                               fontSize: 13.sp,
                               fontWeight: FontWeight.w600,
@@ -73,7 +80,7 @@ class _SheduleCardState extends State<shedule_card> {
                     ),
                   ),
                 ),
-                Padding(
+                /*Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.07,
@@ -81,14 +88,17 @@ class _SheduleCardState extends State<shedule_card> {
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(widget.image),
-                        filterQuality: FilterQuality.high,
+                      image: widget.doctor?.profilePhoto != null
+                          ? DecorationImage(
+                        image: NetworkImage(doctor!.photoUrl!),
                         fit: BoxFit.cover,
+                      )
+                          : const DecorationImage(
+                        image: AssetImage("lib/icons/default_doctor.png"),
                       ),
                     ),
                   ),
-                )
+                )*/
               ],
             ),
             Container(
@@ -168,7 +178,8 @@ class _SheduleCardState extends State<shedule_card> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DoctorDetails(),
+                          builder: (context) => DoctorDetails(isUpdateMode: true,
+                            appointmentId: widget.appointment.id,),
                         ),
                       );
                     },
@@ -250,6 +261,8 @@ class _SheduleCardState extends State<shedule_card> {
                     ),
                     TextButton(
                       onPressed: () {
+                        context.read<AppointmentProvider>()
+                            .cancelAppointment(widget.appointment.id!);
                         setState(() {
                           isCancelled = true;
                         });

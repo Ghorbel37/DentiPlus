@@ -1,39 +1,94 @@
+import 'package:denti_plus/modals/patientCreateModal.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:denti_plus/Screens/Widgets/shedule_card.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class shedule_tab1 extends StatelessWidget {
-  const shedule_tab1({super.key});
+import '../../modals/appointmentModal.dart';
+import '../../modals/doctorModal.dart';
+import '../../providers/appointment_provider.dart';
+import '../../services/api_service.dart';
+
+class ScheduleTab1 extends StatefulWidget {
+  const ScheduleTab1({super.key,});
+
+  @override
+  State<ScheduleTab1> createState() => _ScheduleTab1State();
+}
+
+class _ScheduleTab1State extends State<ScheduleTab1> {
+  final ApiService _apiService = ApiService();
+  final Map<int, PatientCreate> _doctorCache = {};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AppointmentProvider>().fetchPatientAppointments();
+    });
+  }
+
+  Future<PatientCreate?> _getDoctorForAppointment(Appointment appointment) async {
+    if (_doctorCache.containsKey(appointment.consultationId)) {
+      return _doctorCache[appointment.consultationId];
+    }
+
+    try {
+      final doctor = await _apiService.fetchDoctor(2);
+      _doctorCache[appointment.id!] = doctor;
+      return doctor;
+    } catch (e) {
+      print('Error fetching doctor: $e');
+      return null;
+    }
+  }
+
+  String _formatDate(DateTime isoDate) {
+    return DateFormat('dd/MM/yyyy').format(isoDate);
+  }
+
+  String _formatTime(DateTime isoDate) {
+    return DateFormat('hh:mm a').format(isoDate);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final appointments = context.watch<AppointmentProvider>().plannedAppointments;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(children: [
-        const SizedBox(
-          height: 30,
-        ),
-        shedule_card(
-          confirmation: "Confirmed",
-          mainText: "Dr. Marcus Horizon",
-          subText: "Chardiologist",
-          date: "26/06/2022",
-          time: "10:30 AM",
-          image: "lib/icons/male-doctor.png",
-        ),
-        const SizedBox(
-          height: 20,
-        ),
-        shedule_card(
-          confirmation: "Confirmed",
-          mainText: "Dr. Marcus Horizon",
-          subText: "Chardiologist",
-          date: "26/06/2022",
-          time: "2:00 PM",
-          image: "lib/icons/female-doctor2.png",
-        )
-      ]),
+      body: appointments.isEmpty
+          ? Center(child: Text("No appointments found", style: GoogleFonts.poppins()))
+          : ListView.builder(
+        padding: const EdgeInsets.symmetric(vertical: 30),
+        itemCount: appointments.length,
+        itemBuilder: (context, index) {
+          final appointment = appointments[index];
+          return FutureBuilder<PatientCreate?>(
+            future: _getDoctorForAppointment(appointment),
+            builder: (context, snapshot) {
+              final doctor = snapshot.data;
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: shedule_card(
+                  appointment: appointment,
+                  doctor: doctor,
+                  date: _formatDate(appointment.dateAppointment!),
+                  time: _formatTime(appointment.dateAppointment!),
+                  confirmation: appointment.etat.toString(),
+                  onCancel: () => _handleCancelAppointment(appointment.id!),
+                ),
+              );
+            },
+          );
+        },
+      ),
     );
+  }
+  void _handleCancelAppointment(int appointmentId) {
+    context.read<AppointmentProvider>().cancelAppointment(appointmentId);
   }
 }
