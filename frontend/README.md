@@ -2,7 +2,7 @@
 
 Flutter app for **DentiPlus**, a dental consultation platform. Patients describe their symptoms in a chat, get an AI-assisted preliminary diagnosis and book appointments, and dentists review, validate or follow up on consultations. Diagnoses are anchored on a blockchain so their integrity can be verified.
 
-The API lives in [DentiPlus-Backend](https://github.com/Ghorbel37/DentiPlus-Backend) (FastAPI).
+The API is in [`backend/`](../backend/) (FastAPI). Screenshots are in the [main README](../README.md).
 
 ## Features
 
@@ -41,7 +41,7 @@ lib/
 ### Requirements
 
 - Flutter 3.29.2 (see `version.txt`)
-- The DentiPlus backend running
+- The DentiPlus API running (see the [backend README](../backend/README.md); it listens on port 5001)
 
 ### Configuration
 
